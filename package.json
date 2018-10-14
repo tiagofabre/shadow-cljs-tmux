@@ -14,5 +14,9 @@
     "clojure"
   ],
   "author": "tiagofabre@gmail.com",
-  "license": "MIT"
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "tiagofabre/shadow-cljs-tmux"
+  }
 }

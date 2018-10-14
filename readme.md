@@ -1,12 +1,12 @@
 A simple package to update the tmux status line based in shadow-cljs builds
 
-#Installation
+# Installation
 
 ```
 npm install shadow-cljs-tmux -g
 ```
 
-#Usage
+# Usage
 
 ```
 shadow-cljs-tmux watch <<app>>
