@@ -3,7 +3,7 @@ const pparams = process.argv.slice(2).join(' ')
 const currentPath = process.cwd();
 const spawn = require('child_process').spawn;
 const options = {cwd: currentPath, shell: process.env.SHELL};
-const shadow = require('child_process').spawn(`/usr/local/bin/shadow-cljs ${pparams}`, options);
+const shadow = require('child_process').spawn(`shadow-cljs ${pparams}`, options);
 
 const gray = '#eff0f1'
 
