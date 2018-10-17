@@ -7,32 +7,52 @@ const shadow = require('child_process').spawn(`shadow-cljs ${pparams}`, options)
 
 const gray = '#eff0f1'
 
+const statusColors = {
+  'default': 'default',
+  'started': gray,
+  'compiling': 'yellow',
+  'completed': 'green',
+  'failure': 'red',
+  'running': gray,
+};
+
 function setBgColor (color) {
   spawn('tmux', ['set-option', 'status-left-bg', color])
   spawn('tmux', ['set-option', 'status-left-fg', 'black'])
 }
 
-setBgColor(gray)
+function notifyUpdate(status) {
+  color = statusColors[status]
+  setBgColor(color)
+}
 
-function selectColor(data) {
-  if(data.includes('Compiling')) {
-    setBgColor("yellow")
+function parseData(data) {
+  if (data.includes('Compiling')) {
+    return 'compiling'
   } else if (data.includes('Build completed')) {
-    setBgColor("green")
+    return 'completed'
   } else if (data.includes('Build failure')) {
-    setBgColor("red")
+    return 'failure'
   } else if (data.includes('running')) {
-    setBgColor(gray)
+    return 'running'
   }
 }
 
+notifyUpdate('started')
+
 shadow.stdout.on('data', (data) => {
-  selectColor(data)
+  var status = parseData(data)
+  if (status) {
+    notifyUpdate(status)
+  }
   console.log(`${data}`)
 })
 
 shadow.stderr.on('data', (data) => {
-  selectColor(data)
+  var status = parseData(data)
+  if (status) {
+    notifyUpdate(status)
+  }
   console.log(`${data}`)
 })
 
@@ -41,7 +61,7 @@ shadow.on('close', (code) => {
 })
 
 function exitHandler(options, exitCode) {
-  setBgColor('default')
+  notifyUpdate('default')
   shadow.kill('SIGINT')
   process.exit()
 }
