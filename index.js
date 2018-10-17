@@ -40,21 +40,18 @@ function parseData(data) {
 
 notifyUpdate('started')
 
-shadow.stdout.on('data', (data) => {
-  var status = parseData(data)
-  if (status) {
-    notifyUpdate(status)
-  }
-  console.log(`${data}`)
-})
 
-shadow.stderr.on('data', (data) => {
+function onData(data) {
   var status = parseData(data)
   if (status) {
     notifyUpdate(status)
   }
   console.log(`${data}`)
-})
+}
+
+shadow.stdout.on('data', onData)
+
+shadow.stderr.on('data', onData)
 
 shadow.on('close', (code) => {
   console.log(`child process exited with code ${code}`)
